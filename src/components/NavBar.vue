@@ -36,5 +36,10 @@
     font-size: 1rem;
     text-decoration: none;
     font-weight: 600;
+    transition: opacity 0.2s;
+  }
+
+  .navs a:hover {
+    opacity: 0.6;
   }
 </style>
