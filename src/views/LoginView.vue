@@ -4,17 +4,30 @@
         <img src="../images/logo.png" class="logo-img">
         <div class="input-field">
           <label>Korisnicko ime</label>
-          <input type="text"/>
+          <input type="text" v-model="username"/>
         </div>
           <div class="input-field">
           <label>Zaporka</label>
-          <input type="password"/>
+          <input type="password" v-model="password"/>
         </div>
-        <button class="btn-prijava">Prijava</button>
+        <button class="btn-prijava" @click="login">Prijava</button>
         <a class="registracija" href="#">Registracija</a>
       </div>
     </div>
 </template>
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const username = ref('');
+const password = ref('');
+const router = useRouter();
+
+function login(){
+  console.log(`loginranje s ${username.value} i ${password.value}`);
+  router.push("/dashboard")
+}
+</script>
 <style scoped>
 
 .login-page{
