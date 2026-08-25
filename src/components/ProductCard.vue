@@ -2,23 +2,53 @@
     <div class="product-card">
         <div class="top">
             <div class="icon-placeholder"></div>
-            <p>testtest2test2test2test22</p>
+            <p>{{product.name}}</p>
         </div>
         <div class="validity">
-            <p>Vrijedi do </p>
-            <div class="dot"></div>
-        </div>
+            <p>Vrijedi do test</p>
+        <div class="dot" :style="{ backgroundColor: dotColor }"></div>        
+    </div>
     </div>
 </template> 
+<script setup>
+import { computed } from 'vue'
+
+const props = defineProps({
+  product: {
+    type: Object,
+    required: true
+  }
+})
+const dotColor = computed(() => {
+    const status = getStatus()
+    if (status === 'active') return '#63C582'
+    if (status === 'expired') return '#C56363'
+    if (status === 'soon') return '#E3EE8F'
+  })
+
+function getStatus() {
+    const expiry = new Date(props.product.purchaseDate)
+    expiry.setFullYear(expiry.getFullYear() + props.product.warrantyLength)
+
+    const today = new Date()
+    const daysLeft = (expiry - today) / (1000 * 60 * 60 * 24)
+
+    if (daysLeft < 0) return 'expired'
+    if (daysLeft < 90) return 'soon'
+    return 'active'
+  }
+
+</script>
 
 <style scoped>
 .product-card{
     background-color: #EFE6E6;
-    width: 280px;
     border-radius: 16px;
-    padding: 16px;
+    padding: 24px;
     display:flex;
     flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
 }
 .top{
     display:flex;

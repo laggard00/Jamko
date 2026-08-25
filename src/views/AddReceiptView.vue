@@ -1,3 +1,182 @@
 <template>
-    <h1>Hello world</h1>
+  <div class="page">
+    <NavBar></NavBar>
+    <div class="form-card">
+      <h2>Novi račun</h2>
+      <div class="form-body">
+        <div class="fields">
+          <div class="field-group">
+            <label>Naziv proizvoda</label>
+            <input type="text" v-model="form.name" placeholder="iPhone" />
+          </div>
+          <div class="field-group">
+            <label>Kategorija</label>
+            <input type="text" v-model="form.category" placeholder="Elektronika" />
+          </div>
+          <div class="field-group">
+            <label>Datum kupnje</label>
+            <input type="date" v-model="form.purchaseDate" />
+          </div>
+          <div class="field-group">
+            <label>Trgovina</label>
+            <select v-model="form.store">
+              <option value="">Odaberi trgovinu</option>
+              <option value="links">Links</option>
+              <option value="harvey">Harvey Norman</option>
+              <option value="mall">Mall.hr</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Trajanje jamstva</label>
+            <input type="number" v-model="form.warrantyLength" placeholder="1" min="1" />
+          </div>
+        </div>
+        <div class="upload-area">
+          <input type="file" id="file" accept="image/*" @change="handleFile" hidden />
+          <label for="file" class="upload-box">
+            <span class="upload-icon">↑</span>
+            <span>Učitaj fotografiju</span>
+          </label>
+        </div>
+      </div>
+      <button class="btn-dodaj" @click="handleSubmit">+ Dodaj račun</button>
+    </div>
+  </div>
 </template>
+
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import NavBar from '../components/NavBar.vue'
+
+const router = useRouter()
+
+const form = ref({
+  name: '',
+  category: '',
+  purchaseDate: '',
+  store: '',
+  warrantyLength: '',
+})
+
+function handleFile(event) {
+  const file = event.target.files[0]
+  console.log('Uploaded file:', file?.name)
+}
+
+function handleSubmit() {
+  console.log('Novi račun:', form.value)
+  router.push('/dashboard')
+}
+</script>
+
+<style scoped>
+.page {
+  padding: 16px;
+  min-height: 100vh;
+  background-color: #FFF7F7;
+}
+
+.form-card {
+  border: 5px solid #B10B77;
+  border-radius: 20px;
+  padding: clamp(16px, 4vw, 40px);
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+h2 {
+  color: #B10B77;
+  font-weight: 700;
+}
+
+.form-body {
+  display: flex;
+  gap: 32px;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-group label {
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.field-group input,
+.field-group select {
+  border: 1.5px solid rgba(95, 92, 92, 0.4);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  font-family: 'CenturyGothic', sans-serif;
+  outline: none;
+}
+
+.field-group input:focus,
+.field-group select:focus {
+  border-color: #B10B77;
+}
+
+.upload-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-box {
+  width: 100%;
+  height: 200px;
+  background-color: #e0e0e0;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  color: #555;
+  font-size: 0.95rem;
+  transition: background-color 0.2s;
+}
+
+.upload-box:hover {
+  background-color: #d0d0d0;
+}
+
+.upload-icon {
+  font-size: 2rem;
+  color: #B10B77;
+}
+
+.btn-dodaj {
+  align-self: center;
+  border: 3px solid #B10B77;
+  border-radius: 50px;
+  padding: 10px 32px;
+  background: transparent;
+  color: #B10B77;
+  font-weight: 700;
+  font-size: 1rem;
+  font-family: 'CenturyGothic', sans-serif;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-dodaj:hover {
+  opacity: 0.7;
+}
+</style>
