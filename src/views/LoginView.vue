@@ -11,21 +11,45 @@
           <input type="password" v-model="password"/>
         </div>
         <button class="btn-prijava" @click="login">Prijava</button>
-        <a class="registracija" href="#">Registracija</a>
+        <p v-if="error" class="error">{{ error }}</p>
+        <a class="registracija" @click.prevent="register" href="#">Registracija</a>
       </div>
     </div>
 </template>
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { supabase } from '../supabase'
 
-const username = ref('');
-const password = ref('');
-const router = useRouter();
+const username = ref('')
+const password = ref('')
+const error = ref('')
+const router = useRouter()
 
-function login(){
-  console.log(`loginranje s ${username.value} i ${password.value}`);
-  router.push("/dashboard")
+async function login() {
+  error.value = ''
+  const { error: err } = await supabase.auth.signInWithPassword({
+    email: username.value,
+    password: password.value,
+  })
+  if (err) {
+    error.value = err.message
+  } else {
+    router.push('/dashboard')
+  }
+}
+
+async function register() {
+  error.value = ''
+  const { error: err } = await supabase.auth.signUp({
+    email: username.value,
+    password: password.value,
+  })
+  if (err) {
+    error.value = err.message
+  } else {
+    router.push('/dashboard')
+  }
 }
 </script>
 <style scoped>
@@ -93,5 +117,10 @@ function login(){
 
 .registracija:hover {
   text-decoration: underline;
+}
+
+.error {
+  color: red;
+  font-size: 0.85rem;
 }
 </style>
