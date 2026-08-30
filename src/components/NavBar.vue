@@ -4,10 +4,22 @@
         <div class="navs">
             <RouterLink to="/dashboard">Moji računi</RouterLink>
             <RouterLink to="/profile">Profil</RouterLink>
-            <RouterLink to="/odjava">Odjava</RouterLink>
+            <a @click.prevent="logout" href="#">Odjava</a>
         </div>
     </div>
 </template>
+
+<script setup>
+import { useRouter } from 'vue-router'
+import { supabase } from '../supabase'
+
+const router = useRouter()
+
+async function logout() {
+  await supabase.auth.signOut()
+  router.push('/login')
+}
+</script>
 
 <style scoped>
 
