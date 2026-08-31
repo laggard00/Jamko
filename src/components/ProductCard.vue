@@ -2,10 +2,10 @@
     <div class="product-card">
         <div class="top">
             <div class="icon-placeholder"></div>
-            <p>{{product.name}}</p>
+            <p>{{ product.name }}</p>
         </div>
         <div class="validity">
-            <p>Vrijedi do test</p>
+            <p>{{ statusLabel }}</p>
         <div class="dot" :style="{ backgroundColor: dotColor }"></div>        
     </div>
     </div>
@@ -19,6 +19,16 @@ const props = defineProps({
     required: true
   }
 })
+const statusLabel = computed(() => {
+  const expiry = new Date(props.product.purchase_date)
+  expiry.setFullYear(expiry.getFullYear() + props.product.warranty_length)
+  const formatted = expiry.toLocaleDateString('hr-HR')
+  const status = getStatus()
+  if (status === 'expired') return `Isteklo ${formatted}`
+  if (status === 'soon') return `Ističe uskoro ${formatted}`
+  return `Vrijedi do ${formatted}`
+})
+
 const dotColor = computed(() => {
     const status = getStatus()
     if (status === 'active') return '#63C582'
@@ -27,8 +37,8 @@ const dotColor = computed(() => {
   })
 
 function getStatus() {
-    const expiry = new Date(props.product.purchaseDate)
-    expiry.setFullYear(expiry.getFullYear() + props.product.warrantyLength)
+    const expiry = new Date(props.product.purchase_date)
+    expiry.setFullYear(expiry.getFullYear() + props.product.warranty_length)
 
     const today = new Date()
     const daysLeft = (expiry - today) / (1000 * 60 * 60 * 24)

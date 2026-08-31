@@ -2,14 +2,24 @@
 import FilterBarRow from '../components/FilterBarRow.vue';
 import NavBar from '../components/NavBar.vue';
 import ProductCard from '../components/ProductCard.vue';
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { supabase } from '../supabase'
 
-const proizvodi = ref([
-  { name: 'Samsung TV 55"', purchaseDate: '2022-12-01', warrantyLength: 5 },
-  { name: 'Hladnjak Bosch', purchaseDate: '2022-06-01', warrantyLength: 3 },
-  { name: 'Perilica rublja Gorenje', purchaseDate: '2024-01-01', warrantyLength: 2 },
-  { name: 'Pixel 9a', purchaseDate: '2025-03-01', warrantyLength: 3 },
-])
+const proizvodi = ref([])
+
+onMounted(async () => {
+  const { data, error } = await supabase
+    .from('receipts')
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching recipets', error.message)
+    return
+  }
+
+  proizvodi.value = data
+})
 </script>
 
 <template>
