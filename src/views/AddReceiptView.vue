@@ -34,11 +34,15 @@
         <div class="upload-area">
           <input type="file" id="file" accept="image/*" @change="handleFile" hidden />
           <label for="file" class="upload-box">
-            <span class="upload-icon">↑</span>
-            <span>Učitaj fotografiju</span>
+            <img v-if="previewUrl" :src="previewUrl" class="preview-img" />
+            <template v-else>
+              <span class="upload-icon">↑</span>
+              <span>Učitaj fotografiju</span>
+            </template>
           </label>
         </div>
       </div>
+      <p v-if="error" style="color: red; font-size: 0.85rem;">{{ error }}</p>
       <button class="btn-dodaj" @click="handleSubmit">+ Dodaj račun</button>
     </div>
   </div>
@@ -47,9 +51,13 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { supabase } from '../supabase'
 import NavBar from '../components/NavBar.vue'
 
 const router = useRouter()
+const selectedFile = ref(null)
+const previewUrl = ref('')
+const error = ref('')
 
 const form = ref({
   name: '',
@@ -61,11 +69,51 @@ const form = ref({
 
 function handleFile(event) {
   const file = event.target.files[0]
-  console.log('Uploaded file:', file?.name)
+  if (!file) return
+  selectedFile.value = file
+  previewUrl.value = URL.createObjectURL(file)
 }
 
-function handleSubmit() {
-  console.log('Novi račun:', form.value)
+async function handleSubmit() {
+  error.value = ''
+
+  const { data: userData } = await supabase.auth.getUser()
+  const userId = userData.user.id
+
+  let photoUrl = ''
+
+  if (selectedFile.value) {
+    const ext = selectedFile.value.name.split('.').pop()
+    const fileName = `${userId}/${Date.now()}.${ext}`
+
+    const { error: uploadErr } = await supabase.storage
+      .from('receipts')
+      .upload(fileName, selectedFile.value)
+
+    if (uploadErr) {
+      error.value = uploadErr.message
+      return
+    }
+
+    const { data } = supabase.storage.from('receipts').getPublicUrl(fileName)
+    photoUrl = data.publicUrl
+  }
+
+  const { error: insertErr } = await supabase.from('receipts').insert({
+    user_id: userId,
+    name: form.value.name,
+    category: form.value.category,
+    purchase_date: form.value.purchaseDate,
+    warranty_length: parseInt(form.value.warrantyLength),
+    store: form.value.store,
+    photo_url: photoUrl,
+  })
+
+  if (insertErr) {
+    error.value = insertErr.message
+    return
+  }
+
   router.push('/dashboard')
 }
 </script>
@@ -160,6 +208,13 @@ h2 {
 .upload-icon {
   font-size: 2rem;
   color: #B10B77;
+}
+
+.preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
 }
 
 .btn-dodaj {
