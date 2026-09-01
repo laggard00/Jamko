@@ -1,13 +1,13 @@
 <template>
   <div class="filter-bar">
     <div class="filters">
-      <select class="filter-select">
+      <select class="filter-select" v-model="selectedCategory" @change="emit('filter', { category: selectedCategory, status: selectedStatus })">
         <option value="">Kategorija</option>
-        <option value="elektronika">Elektronika</option>
-        <option value="kucanski">Kućanski aparati</option>
-        <option value="mobitel">Mobitel</option>
+        <option value="Elektronika">Elektronika</option>
+        <option value="Kućanski aparati">Kućanski aparati</option>
+        <option value="Mobitel">Mobitel</option>
       </select>
-      <select class="filter-select">
+      <select class="filter-select" v-model="selectedStatus" @change="emit('filter', { category: selectedCategory, status: selectedStatus })">
         <option value="">Status</option>
         <option value="active">Aktivno</option>
         <option value="soon">Ističe uskoro</option>
@@ -19,7 +19,12 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
+
+const emit = defineEmits(['filter'])
+const selectedCategory = ref('')
+const selectedStatus = ref('')
 </script>
 
 <style scoped>

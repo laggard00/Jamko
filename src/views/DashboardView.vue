@@ -2,10 +2,11 @@
 import FilterBarRow from '../components/FilterBarRow.vue';
 import NavBar from '../components/NavBar.vue';
 import ProductCard from '../components/ProductCard.vue';
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { supabase } from '../supabase'
 
 const proizvodi = ref([])
+const activeFilters = ref({ category: '', status: '' })
 
 onMounted(async () => {
   const { data, error } = await supabase
@@ -20,14 +21,35 @@ onMounted(async () => {
 
   proizvodi.value = data
 })
+
+function getStatus(product) {
+  const expiry = new Date(product.purchase_date)
+  expiry.setFullYear(expiry.getFullYear() + product.warranty_length)
+  const daysLeft = (expiry - new Date()) / (1000 * 60 * 60 * 24)
+  if (daysLeft < 0) return 'expired'
+  if (daysLeft < 90) return 'soon'
+  return 'active'
+}
+
+const filteredProizvodi = computed(() => {
+  return proizvodi.value.filter(p => {
+    const categoryMatch = !activeFilters.value.category || p.category === activeFilters.value.category
+    const statusMatch = !activeFilters.value.status || getStatus(p) === activeFilters.value.status
+    return categoryMatch && statusMatch
+  })
+})
+
+function handleFilter(filters) {
+  activeFilters.value = filters
+}
 </script>
 
 <template>
   <div class="page">
     <NavBar></NavBar>
-    <FilterBarRow></FilterBarRow>
+    <FilterBarRow @filter="handleFilter"></FilterBarRow>
     <div class="grid">
-      <ProductCard v-for="(proizvod, index) in proizvodi" :key="index" :product="proizvod"></ProductCard>
+      <ProductCard v-for="proizvod in filteredProizvodi" :key="proizvod.id" :product="proizvod"></ProductCard>
     </div>
   </div>
 </template>
