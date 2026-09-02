@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.3.1",
     "@supabase/supabase-js": "^2.112.4",
     "bootstrap": "^5.3.3",
     "eslint-plugin-vue": "^10.10.0",

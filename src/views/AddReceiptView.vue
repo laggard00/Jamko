@@ -42,6 +42,12 @@
             </template>
           </label>
         </div>
+        <div class="icons">
+          <div v-for="(url, name) in Ikone":key="name"class="icon-cont" :class="{ selected: form.icon === url }"@click="form.icon = url">
+          <img :src="url" :alt="name" />
+          <span>{{ name }}</span>
+        </div>
+        </div>
       </div>
       <p v-if="error" style="color: red; font-size: 0.85rem;">{{ error }}</p>
       <button class="btn-dodaj" @click="handleSubmit">+ Dodaj račun</button>
@@ -53,7 +59,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
-import {Kategorija, Statusi} from '../enums/enums.js'
+import {Ikone} from '../assets/icons/Ikone.js'
+import { Kategorija, Statusi } from '../enums/enums.js'
 import NavBar from '../components/NavBar.vue'
 
 const router = useRouter()
@@ -67,6 +74,7 @@ const form = ref({
   purchaseDate: '',
   store: '',
   warrantyLength: '',
+  icon: '',
 })
 
 function handleFile(event) {
@@ -235,5 +243,36 @@ h2 {
 
 .btn-dodaj:hover {
   opacity: 0.7;
+}
+
+.icons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+.icon-cont {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.icon-cont img {
+    width: 32px;
+    height: 32px;
+}
+
+.icon-cont span {
+    font-size: 0.7rem;
+    color: #555;
+}
+
+.icon-cont.selected {
+    border-color: #B10B77;
 }
 </style>
