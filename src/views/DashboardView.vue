@@ -4,6 +4,7 @@ import NavBar from '../components/NavBar.vue';
 import ProductCard from '../components/ProductCard.vue';
 import { ref, computed, onMounted } from 'vue'
 import { supabase } from '../supabase'
+import { Statusi } from '../enums/enums.js';
 
 const proizvodi = ref([])
 const activeFilters = ref({ category: '', status: '' })
@@ -28,9 +29,9 @@ function getStatus(product) {
   const expiry = new Date(product.purchase_date)
   expiry.setFullYear(expiry.getFullYear() + product.warranty_length)
   const daysLeft = (expiry - new Date()) / (1000 * 60 * 60 * 24)
-  if (daysLeft < 0) return 'expired'
-  if (daysLeft < 90) return 'soon'
-  return 'active'
+  if (daysLeft < 0) return Statusi.Istekao
+  if (daysLeft < 90) return Statusi['Uskoro ističe']
+  return Statusi.Aktivan;
 }
 
 const filteredProizvodi = computed(() => {

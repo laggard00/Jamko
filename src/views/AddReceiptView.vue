@@ -12,10 +12,11 @@
           <div class="field-group">
             <label>Kategorija</label>
             <select v-model="form.category">
-              <option value="">Odaberi kategoriju</option>
-              <option value="Elektronika">Elektronika</option>
-              <option value="Kućanski aparati">Kućanski aparati</option>
-              <option value="Mobitel">Mobitel</option>
+        <option disabled value="">Odaberite kategoriju</option>
+        <option 
+        v-for="(value, key) in Kategorija" :key="value" :value="value">
+        {{ key }}
+      </option>
             </select>
           </div>
           <div class="field-group">
@@ -24,12 +25,7 @@
           </div>
           <div class="field-group">
             <label>Trgovina</label>
-            <select v-model="form.store">
-              <option value="">Odaberi trgovinu</option>
-              <option value="links">Links</option>
-              <option value="harvey">Harvey Norman</option>
-              <option value="mall">Mall.hr</option>
-            </select>
+            <input v-model="form.store" placeholder="Ime trgovine">
           </div>
           <div class="field-group">
             <label>Trajanje jamstva</label>
@@ -57,6 +53,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
+import {Kategorija, Statusi} from '../enums/enums.js'
 import NavBar from '../components/NavBar.vue'
 
 const router = useRouter()

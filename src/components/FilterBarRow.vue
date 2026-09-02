@@ -2,16 +2,18 @@
   <div class="filter-bar">
     <div class="filters">
       <select class="filter-select" v-model="selectedCategory" @change="emit('filter', { category: selectedCategory, status: selectedStatus })">
-        <option value="">Kategorija</option>
-        <option value="Elektronika">Elektronika</option>
-        <option value="Kućanski aparati">Kućanski aparati</option>
-        <option value="Mobitel">Mobitel</option>
+        <option disabled value="">Odaberite kategoriju</option>
+        <option 
+        v-for="(value, key) in Kategorija" :key="value" :value="value">
+        {{ key }}
+      </option>
       </select>
       <select class="filter-select" v-model="selectedStatus" @change="emit('filter', { category: selectedCategory, status: selectedStatus })">
-        <option value="">Status</option>
-        <option value="active">Aktivno</option>
-        <option value="soon">Ističe uskoro</option>
-        <option value="expired">Isteklo</option>
+    <option disabled value="">Odaberite status</option>
+        <option 
+        v-for="(value, key) in Statusi" :key="value" :value="value">
+        {{ key }}
+      </option>
       </select>
     </div>
     <RouterLink to="/add-receipt" class="btn-dodaj">+ Dodaj račun</RouterLink>
@@ -21,6 +23,7 @@
 <script setup>
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import {Kategorija, Statusi} from '../enums/enums.js'
 
 const emit = defineEmits(['filter'])
 const selectedCategory = ref('')
