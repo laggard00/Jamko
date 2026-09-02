@@ -42,6 +42,15 @@ const filteredProizvodi = computed(() => {
 function handleFilter(filters) {
   activeFilters.value = filters
 }
+
+async function handleDelete(id) {
+  const { error } = await supabase.from('receipts').delete().eq('id', id)
+  if (error) {
+    console.error('Error deleting receipt:', error.message)
+    return
+  }
+  proizvodi.value = proizvodi.value.filter(p => p.id !== id)
+}
 </script>
 
 <template>
@@ -49,7 +58,7 @@ function handleFilter(filters) {
     <NavBar></NavBar>
     <FilterBarRow @filter="handleFilter"></FilterBarRow>
     <div class="grid">
-      <ProductCard v-for="proizvod in filteredProizvodi" :key="proizvod.id" :product="proizvod"></ProductCard>
+      <ProductCard v-for="proizvod in filteredProizvodi" :key="proizvod.id" :product="proizvod" @delete="handleDelete"></ProductCard>
     </div>
   </div>
 </template>

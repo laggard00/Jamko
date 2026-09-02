@@ -2,16 +2,19 @@
     <div class="product-card">
         <div class="top">
             <div class="icon-placeholder"></div>
-            <p>{{ product.name }}</p>
+            <p class="product-name">{{ product.name }}</p>
+            <button class="btn-delete" @click="emit('delete', product.id)">✕</button>
         </div>
         <div class="validity">
-            <p>{{ statusLabel }}</p>
-        <div class="dot" :style="{ backgroundColor: dotColor }"></div>        
-    </div>
+            <p class="status-text">{{ statusLabel }}</p>
+            <div class="dot" :style="{ backgroundColor: dotColor }"></div>
+        </div>
     </div>
 </template> 
 <script setup>
 import { computed } from 'vue'
+
+const emit = defineEmits(['delete'])
 
 const props = defineProps({
   product: {
@@ -51,37 +54,69 @@ function getStatus() {
 </script>
 
 <style scoped>
-.product-card{
+.product-card {
     background-color: #EFE6E6;
     border-radius: 16px;
-    padding: 24px;
-    display:flex;
+    padding: 20px;
+    display: flex;
     flex-direction: column;
     justify-content: space-between;
     min-height: 180px;
+    gap: 16px;
 }
-.top{
-    display:flex;
+
+.top {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.product-name {
+    flex: 1;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #222;
+}
+
+.validity {
+    display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
 }
-.validity{
-    display:flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;  
+
+.status-text {
+    font-size: 0.85rem;
+    color: #555;
 }
+
 .icon-placeholder {
     width: 60px;
     height: 60px;
+    min-width: 60px;
     background-color: #ccc;
-    border-radius: 8px;
-  }
-.dot{
-    width: 20px;
-    height: 20px;
+    border-radius: 10px;
+}
+
+.dot {
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
-    background-color: green;
+}
+
+.btn-delete {
+    background: none;
+    border: none;
+    color: #bbb;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0;
+    margin-left: auto;
+    transition: color 0.2s;
+}
+
+.btn-delete:hover {
+    color: #C56363;
 }
 </style>
