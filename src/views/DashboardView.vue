@@ -7,6 +7,8 @@ import { supabase } from '../supabase'
 
 const proizvodi = ref([])
 const activeFilters = ref({ category: '', status: '' })
+const showModal = ref(false)
+const pendingDeleteId = ref(null)
 
 onMounted(async () => {
   const { data, error } = await supabase
@@ -43,13 +45,20 @@ function handleFilter(filters) {
   activeFilters.value = filters
 }
 
-async function handleDelete(id) {
-  const { error } = await supabase.from('receipts').delete().eq('id', id)
+function confirmDelete(id) {
+  pendingDeleteId.value = id
+  showModal.value = true
+}
+
+async function deleteConfirmed() {
+  const { error } = await supabase.from('receipts').delete().eq('id', pendingDeleteId.value)
   if (error) {
     console.error('Error deleting receipt:', error.message)
     return
   }
-  proizvodi.value = proizvodi.value.filter(p => p.id !== id)
+  proizvodi.value = proizvodi.value.filter(p => p.id !== pendingDeleteId.value)
+  showModal.value = false
+  pendingDeleteId.value = null
 }
 </script>
 
@@ -58,7 +67,17 @@ async function handleDelete(id) {
     <NavBar></NavBar>
     <FilterBarRow @filter="handleFilter"></FilterBarRow>
     <div class="grid">
-      <ProductCard v-for="proizvod in filteredProizvodi" :key="proizvod.id" :product="proizvod" @delete="handleDelete"></ProductCard>
+      <ProductCard v-for="proizvod in filteredProizvodi" :key="proizvod.id" :product="proizvod" @delete="confirmDelete"></ProductCard>
+    </div>
+
+    <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
+      <div class="modal">
+        <p>Jeste li sigurni da želite obrisati ovaj račun?</p>
+        <div class="modal-btns">
+          <button class="btn-cancel" @click="showModal = false">Odustani</button>
+          <button class="btn-confirm" @click="deleteConfirmed">Obriši</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -75,5 +94,65 @@ async function handleDelete(id) {
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   margin-top: 16px;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  background: #FFF7F7;
+  border: 3px solid #B10B77;
+  border-radius: 16px;
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-btns {
+  display: flex;
+  gap: 16px;
+}
+
+.btn-cancel {
+  border: 3px solid #B10B77;
+  border-radius: 50px;
+  padding: 8px 24px;
+  background: transparent;
+  color: #B10B77;
+  font-weight: 700;
+  font-family: 'CenturyGothic', sans-serif;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-cancel:hover {
+  opacity: 0.7;
+}
+
+.btn-confirm {
+  border: 3px solid #C56363;
+  border-radius: 50px;
+  padding: 8px 24px;
+  background: #C56363;
+  color: white;
+  font-weight: 700;
+  font-family: 'CenturyGothic', sans-serif;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-confirm:hover {
+  opacity: 0.8;
 }
 </style>

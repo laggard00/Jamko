@@ -11,7 +11,12 @@
           </div>
           <div class="field-group">
             <label>Kategorija</label>
-            <input type="text" v-model="form.category" placeholder="Elektronika" />
+            <select v-model="form.category">
+              <option value="">Odaberi kategoriju</option>
+              <option value="Elektronika">Elektronika</option>
+              <option value="Kućanski aparati">Kućanski aparati</option>
+              <option value="Mobitel">Mobitel</option>
+            </select>
           </div>
           <div class="field-group">
             <label>Datum kupnje</label>
