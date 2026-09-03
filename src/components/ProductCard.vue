@@ -3,7 +3,7 @@
         <div class="top">
             <div class="icons">
             <img v-if="product.icon_url" :src="product.icon_url" :alt="product.name" />  
-            <img v-else="" src="../assets/icons/other.svg"
+            <img v-else src="../assets/icons/other.svg" />
             </div>
             <p class="product-name">{{ product.name }}</p>
             <button class="btn-delete" @click="emit('delete', product.id)">✕</button>
@@ -133,28 +133,4 @@ function getStatus() {
     height: 100%;
     object-fit: contain;
   }
-.icon-cont {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    border: 2px solid transparent;
-}
-
-.icon-cont img {
-    width: 32px;
-    height: 32px;
-}
-
-.icon-cont span {
-    font-size: 0.7rem;
-    color: #555;
-}
-
-.icon-cont.selected {
-    border-color: #B10B77;
-}
 </style>

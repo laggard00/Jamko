@@ -70,6 +70,9 @@ async function deleteConfirmed() {
     <div class="grid">
       <ProductCard v-for="proizvod in filteredProizvodi" :key="proizvod.id" :product="proizvod" @delete="confirmDelete"></ProductCard>
     </div>
+    <div v-if="filteredProizvodi.length === 0" class="empty-state">
+      <p>Nema pronađenih računa.</p>
+    </div>
 
     <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
       <div class="modal">
@@ -95,6 +98,13 @@ async function deleteConfirmed() {
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   margin-top: 16px;
+}
+
+.empty-state {
+  text-align: center;
+  color: #aaa;
+  font-size: 1rem;
+  margin-top: 48px;
 }
 
 .modal-overlay {
