@@ -43,7 +43,7 @@
           </label>
         </div>
         <div class="icons">
-          <div v-for="(url, name) in Ikone":key="name"class="icon-cont" :class="{ selected: form.icon === url }"@click="form.icon = url">
+          <div v-for="(url, name) in Ikone":key="name"class="icon-cont" :class="{ selected: form.icon_url === url }"@click="form.icon_url = url; console.log(form.icon_url)">
           <img :src="url" :alt="name" />
           <span>{{ name }}</span>
         </div>
@@ -74,7 +74,7 @@ const form = ref({
   purchaseDate: '',
   store: '',
   warrantyLength: '',
-  icon: '',
+  icon_url: '',
 })
 
 function handleFile(event) {
@@ -117,6 +117,7 @@ async function handleSubmit() {
     warranty_length: parseInt(form.value.warrantyLength),
     store: form.value.store,
     photo_url: photoUrl,
+    icon_url: form.value.icon_url
   })
 
   if (insertErr) {
