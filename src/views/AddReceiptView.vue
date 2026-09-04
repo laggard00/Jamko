@@ -2,7 +2,7 @@
   <div class="page">
     <NavBar></NavBar>
     <div class="form-card">
-      <h2>Novi račun</h2>
+      <h2>{{ editId ? 'Uredi račun' : 'Novi račun' }}</h2>
       <div class="form-body">
         <div class="fields">
           <div class="field-group">
@@ -50,20 +50,22 @@
         </div>
       </div>
       <p v-if="error" style="color: red; font-size: 0.85rem;">{{ error }}</p>
-      <button class="btn-dodaj" @click="handleSubmit">+ Dodaj račun</button>
+      <button class="btn-dodaj" @click="handleSubmit">{{ editId ? 'Spremi izmjene' : '+ Dodaj račun' }}</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { supabase } from '../supabase'
 import {Ikone} from '../assets/icons/Ikone.js'
 import { Kategorija, Statusi } from '../enums/enums.js'
 import NavBar from '../components/NavBar.vue'
 
 const router = useRouter()
+const route = useRoute()
+const editId = ref(null)
 const selectedFile = ref(null)
 const previewUrl = ref('')
 const error = ref('')
@@ -75,6 +77,22 @@ const form = ref({
   store: '',
   warrantyLength: '',
   icon_url: '',
+})
+
+onMounted(async () => {
+  if (route.query.id) {
+    editId.value = route.query.id
+    const { data } = await supabase.from('receipts').select('*').eq('id', editId.value).single()
+    if (data) {
+      form.value.name = data.name
+      form.value.category = data.category
+      form.value.purchaseDate = data.purchase_date
+      form.value.store = data.store
+      form.value.warrantyLength = data.warranty_length
+      form.value.icon_url = data.icon_url
+      previewUrl.value = data.photo_url || ''
+    }
+  }
 })
 
 function handleFile(event) {
@@ -109,19 +127,27 @@ async function handleSubmit() {
     photoUrl = data.publicUrl
   }
 
-  const { error: insertErr } = await supabase.from('receipts').insert({
-    user_id: userId,
+  const payload = {
     name: form.value.name,
     category: form.value.category,
     purchase_date: form.value.purchaseDate,
     warranty_length: parseInt(form.value.warrantyLength),
     store: form.value.store,
-    photo_url: photoUrl,
-    icon_url: form.value.icon_url
-  })
+    icon_url: form.value.icon_url,
+    ...(photoUrl && { photo_url: photoUrl }),
+  }
 
-  if (insertErr) {
-    error.value = insertErr.message
+  let submitErr
+  if (editId.value) {
+    const { error: updateErr } = await supabase.from('receipts').update(payload).eq('id', editId.value)
+    submitErr = updateErr
+  } else {
+    const { error: insertErr } = await supabase.from('receipts').insert({ ...payload, user_id: userId, photo_url: photoUrl })
+    submitErr = insertErr
+  }
+
+  if (submitErr) {
+    error.value = submitErr.message
     return
   }
 

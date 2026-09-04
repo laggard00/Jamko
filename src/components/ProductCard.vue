@@ -6,6 +6,7 @@
             <img v-else src="../assets/icons/other.svg" />
             </div>
             <p class="product-name">{{ product.name }}</p>
+            <button class="btn-edit" @click="emit('edit', product.id)">✎</button>
             <button class="btn-delete" @click="emit('delete', product.id)">✕</button>
         </div>
         <div class="validity">
@@ -17,7 +18,7 @@
 <script setup>
 import { computed } from 'vue'
 
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['delete', 'edit'])
 
 const props = defineProps({
   product: {
@@ -108,6 +109,21 @@ function getStatus() {
     border-radius: 50%;
 }
 
+.btn-edit {
+    background: none;
+    border: none;
+    color: #bbb;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0;
+    margin-left: auto;
+    transition: color 0.2s;
+}
+
+.btn-edit:hover {
+    color: #B10B77;
+}
+
 .btn-delete {
     background: none;
     border: none;
@@ -115,7 +131,6 @@ function getStatus() {
     font-size: 0.9rem;
     cursor: pointer;
     padding: 0;
-    margin-left: auto;
     transition: color 0.2s;
 }
 

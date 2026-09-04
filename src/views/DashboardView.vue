@@ -3,8 +3,11 @@ import FilterBarRow from '../components/FilterBarRow.vue';
 import NavBar from '../components/NavBar.vue';
 import ProductCard from '../components/ProductCard.vue';
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { supabase } from '../supabase'
 import { Statusi } from '../enums/enums.js';
+
+const router = useRouter()
 
 const proizvodi = ref([])
 const activeFilters = ref({ category: '', status: '' })
@@ -46,6 +49,10 @@ function handleFilter(filters) {
   activeFilters.value = filters
 }
 
+function handleEdit(id) {
+  router.push({ name: 'add-receipt', query: { id } })
+}
+
 function confirmDelete(id) {
   pendingDeleteId.value = id
   showModal.value = true
@@ -68,7 +75,7 @@ async function deleteConfirmed() {
     <NavBar></NavBar>
     <FilterBarRow @filter="handleFilter"></FilterBarRow>
     <div class="grid">
-      <ProductCard v-for="proizvod in filteredProizvodi" :key="proizvod.id" :product="proizvod" @delete="confirmDelete"></ProductCard>
+      <ProductCard v-for="proizvod in filteredProizvodi" :key="proizvod.id" :product="proizvod" @delete="confirmDelete" @edit="handleEdit"></ProductCard>
     </div>
     <div v-if="filteredProizvodi.length === 0" class="empty-state">
       <p>Nema pronađenih računa.</p>
