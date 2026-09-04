@@ -50,53 +50,11 @@ src/
 ### Prerequisites
 
 - Node.js 18+
-- A [Supabase](https://supabase.com) project
-
-### Supabase Setup
-
-1. Create a `receipts` table:
-
-```sql
-create table receipts (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references auth.users not null,
-  name text not null,
-  category text,
-  purchase_date date,
-  warranty_length int,
-  store text,
-  photo_url text,
-  icon_url text,
-  created_at timestamp default now()
-);
-
-alter table receipts enable row level security;
-
-create policy "Users can manage own receipts" on receipts
-  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
-```
-
-2. Create two storage buckets: `receipts` and `profile-pics`
-
-3. Add an RLS policy on `profile-pics` so each user can only access their own file:
-```sql
-split_part(storage.filename(name), '.', 1) = auth.uid()::text
-```
 
 ### Installation
 
 ```bash
 npm install
-```
-
-Create a `.env` file in the project root:
-
-```env
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_KEY=your_supabase_anon_key
-```
-
-```bash
 npm run dev
 ```
 
