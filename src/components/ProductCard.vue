@@ -28,7 +28,7 @@ const props = defineProps({
 })
 const statusLabel = computed(() => {
   const expiry = new Date(props.product.purchase_date)
-  expiry.setFullYear(expiry.getFullYear() + props.product.warranty_length)
+  expiry.setMonth(expiry.getMonth() + props.product.warranty_length)
   const formatted = expiry.toLocaleDateString('hr-HR')
   const status = getStatus()
   if (status === 'expired') return `Isteklo ${formatted}`
@@ -45,7 +45,7 @@ const dotColor = computed(() => {
 
 function getStatus() {
     const expiry = new Date(props.product.purchase_date)
-    expiry.setFullYear(expiry.getFullYear() + props.product.warranty_length)
+    expiry.setMonth(expiry.getMonth() + props.product.warranty_length)
 
     const today = new Date()
     const daysLeft = (expiry - today) / (1000 * 60 * 60 * 24)

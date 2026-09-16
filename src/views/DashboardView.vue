@@ -30,7 +30,7 @@ onMounted(async () => {
 
 function getStatus(product) {
   const expiry = new Date(product.purchase_date)
-  expiry.setFullYear(expiry.getFullYear() + product.warranty_length)
+  expiry.setMonth(expiry.getMonth() + product.warranty_length)
   const daysLeft = (expiry - new Date()) / (1000 * 60 * 60 * 24)
   if (daysLeft < 0) return Statusi.Istekao
   if (daysLeft < 90) return Statusi['Uskoro ističe']
