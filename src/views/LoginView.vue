@@ -8,7 +8,7 @@
         </div>
           <div class="input-field">
           <label>Zaporka</label>
-          <input type="password" v-model="password"/>
+          <input type="password" v-model="password" @keyup.enter="login"/>
         </div>
         <button class="btn-prijava" @click="login">Prijava</button>
         <p v-if="error" class="error">{{ error }}</p>
