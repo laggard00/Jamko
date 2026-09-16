@@ -34,14 +34,14 @@
         </div>
         <div class="upload-area">
           <input type="file" id="file" accept="image/*" @change="handleFile" hidden />
-          <div class="upload-box">
+          <label for="file" class="upload-box">
             <img v-if="previewUrl" :src="previewUrl" class="preview-img" />
-            <label v-else for="file" class="upload-placeholder">
+            <template v-else>
               <span class="upload-icon">↑</span>
               <span>Učitaj fotografiju</span>
-            </label>
-            <a v-if="previewUrl" :href="previewUrl" target="_blank" class="btn-open">Otvori sliku</a>
-          </div>
+            </template>
+            <a v-if="previewUrl" :href="previewUrl" target="_blank" class="btn-open" @click.stop>Otvori sliku</a>
+          </label>
         </div>
         <div class="icons">
           <div v-for="(url, name) in Ikone":key="name"class="icon-cont" :class="{ selected: form.icon_url === url }"@click="form.icon_url = url; console.log(form.icon_url)">
@@ -232,11 +232,6 @@ h2 {
   background-color: #e0e0e0;
   position: relative;
   overflow: hidden;
-}
-
-.upload-placeholder {
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -248,7 +243,7 @@ h2 {
   transition: background-color 0.2s;
 }
 
-.upload-placeholder:hover {
+.upload-box:hover {
   background-color: #d0d0d0;
 }
 
@@ -258,10 +253,11 @@ h2 {
 }
 
 .preview-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
 .btn-open {
