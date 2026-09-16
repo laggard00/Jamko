@@ -90,7 +90,10 @@ onMounted(async () => {
       form.value.store = data.store
       form.value.warrantyLength = data.warranty_length
       form.value.icon_url = data.icon_url
-      previewUrl.value = data.photo_url || ''
+      if (data.photo_url) {
+        const { data: signed } = await supabase.storage.from('receipts').createSignedUrl(data.photo_url, 3600)
+        previewUrl.value = signed?.signedUrl || ''
+      }
     }
   }
 })
@@ -123,8 +126,7 @@ async function handleSubmit() {
       return
     }
 
-    const { data } = supabase.storage.from('receipts').getPublicUrl(fileName)
-    photoUrl = data.publicUrl
+    photoUrl = fileName
   }
 
   const payload = {
