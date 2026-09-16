@@ -28,13 +28,13 @@
             <input v-model="form.store" placeholder="Ime trgovine">
           </div>
           <div class="field-group">
-            <label>Trajanje jamstva</label>
-            <input type="number" v-model="form.warrantyLength" placeholder="1" min="1" />
+            <label>Trajanje jamstva (mjeseci)</label>
+            <input type="number" v-model="form.warrantyLength" placeholder="12" min="1" />
           </div>
         </div>
         <div class="upload-area">
           <input type="file" id="file" accept="image/*" @change="handleFile" hidden />
-          <label for="file" class="upload-box">
+          <label for="file" class="upload-box" :class="{ 'has-image': previewUrl }">
             <img v-if="previewUrl" :src="previewUrl" class="preview-img" />
             <template v-else>
               <span class="upload-icon">↑</span>
@@ -238,10 +238,16 @@ h2 {
   color: #555;
   font-size: 0.95rem;
   transition: background-color 0.2s;
+  position: relative;
+  overflow: hidden;
 }
 
 .upload-box:hover {
   background-color: #d0d0d0;
+}
+
+.upload-box.has-image:hover {
+  background-color: #e0e0e0;
 }
 
 .upload-icon {
@@ -250,10 +256,11 @@ h2 {
 }
 
 .preview-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 16px;
 }
 
 .btn-dodaj {
