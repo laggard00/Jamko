@@ -34,13 +34,14 @@
         </div>
         <div class="upload-area">
           <input type="file" id="file" accept="image/*" @change="handleFile" hidden />
-          <label for="file" class="upload-box" :class="{ 'has-image': previewUrl }">
+          <div class="upload-box">
             <img v-if="previewUrl" :src="previewUrl" class="preview-img" />
-            <template v-else>
+            <label v-else for="file" class="upload-placeholder">
               <span class="upload-icon">↑</span>
               <span>Učitaj fotografiju</span>
-            </template>
-          </label>
+            </label>
+            <a v-if="previewUrl" :href="previewUrl" target="_blank" class="btn-open">Otvori sliku</a>
+          </div>
         </div>
         <div class="icons">
           <div v-for="(url, name) in Ikone":key="name"class="icon-cont" :class="{ selected: form.icon_url === url }"@click="form.icon_url = url; console.log(form.icon_url)">
@@ -227,8 +228,15 @@ h2 {
 .upload-box {
   width: 100%;
   height: 200px;
-  background-color: #e0e0e0;
   border-radius: 16px;
+  background-color: #e0e0e0;
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-placeholder {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -238,16 +246,10 @@ h2 {
   color: #555;
   font-size: 0.95rem;
   transition: background-color 0.2s;
-  position: relative;
-  overflow: hidden;
 }
 
-.upload-box:hover {
+.upload-placeholder:hover {
   background-color: #d0d0d0;
-}
-
-.upload-box.has-image:hover {
-  background-color: #e0e0e0;
 }
 
 .upload-icon {
@@ -256,11 +258,23 @@ h2 {
 }
 
 .preview-img {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+}
+
+.btn-open {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.55);
+  color: white;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  text-decoration: none;
+  font-family: 'CenturyGothic', sans-serif;
 }
 
 .btn-dodaj {
